@@ -1,6 +1,15 @@
+/* Variable for FILTERS */
 const inputs = document.querySelectorAll(".filters input");
-const outputs = document.querySelectorAll(".filters output");
+
+/* Variable for FOOLSCREEN */
 const btnFullscreen = document.querySelector(".fullscreen");
+
+/* Variable for NEXT PICTURE */
+const baseSrc = "assets/img/";
+const images = ["01.jpg", "02.jpg", "03.jpg"];
+let i = 0;
+const showImg = document.querySelector("img");
+const btnNextImage = document.querySelector(".btn-next");
 
 /*FILTERS*/
 function handleUpdate() {
@@ -9,17 +18,8 @@ function handleUpdate() {
     `--${this.name}`,
     this.value + suffix
   );
-
-  //outputs[2].output.name[`--${this.name}`].innerHTML = this.value;
-  //alert(outputs[2].name);
-  //outputs.value = this.value;
-  //document.getElementById(id).innerHTML = this.value
 }
-
 inputs.forEach((input) => input.addEventListener("input", handleUpdate));
-//outputs.forEach((input) => outputs.value = this.value;
-console.log(inputs);
-console.log(outputs);
 
 /* FOOLSCREEN */
 btnFullscreen.addEventListener(
@@ -39,3 +39,40 @@ function toggleFullScreen() {
     }
   }
 }
+
+/*NEXT PICTURE*/
+function viewBgImage(src) {
+  const img = new Image();
+  img.src = src;
+  img.onload = () => {
+    showImg.src = `${src}`;
+  };
+}
+
+function getImage() {
+  const index = i % images.length;
+  const imageSrc = baseSrc + images[index];
+  viewBgImage(imageSrc);
+  i++;
+  btnNextImage.disabled = true;
+  setTimeout(function () {
+    btnNextImage.disabled = false;
+  }, 1000);
+}
+btnNextImage.addEventListener("click", getImage);
+
+/*LOAD PICTURE*/
+const fileInput = document.querySelector('input[type="file"]');
+const imageContainer = document.querySelector(".image-container");
+
+fileInput.addEventListener("change", function (e) {
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.src = reader.result;
+    imageContainer.innerHTML = "";
+    imageContainer.append(img);
+  };
+  reader.readAsDataURL(file);
+});
